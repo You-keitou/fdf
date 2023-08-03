@@ -1,4 +1,4 @@
-INCLUDES = ../../include
+INCLUDES = ../include
 CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES)
 NAME = libft.a
 
@@ -14,9 +14,6 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(AR) cr $@ $^
-
-bonus:
-	make with_bonus=1
 
 clean:
 	-$(RM) $(OBJS)

@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jinyang <jinyang@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/30 19:56:29 by jinyang           #+#    #+#             */
-/*   Updated: 2023/08/04 08:27:55 by jinyang          ###   ########.fr       */
+/*   Created: 2022/07/24 01:31:00 by jinyang           #+#    #+#             */
+/*   Updated: 2023/08/04 08:19:12 by jinyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include "libft.h"
-#include "libftprintf.h"
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-int	main(int argc, char **argv)
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
+
+# include <unistd.h>
+# include <stdbool.h>
+# include <stdlib.h>
+
+typedef struct s_save
 {
-	char	*line;
+	char	*content;
+	char	*cur;
+	char	*cl_ptr;
+	bool	flag;
+}	t_save;
 
-	while(line = get_next_line(0))
-	{
-		ft_printf("%s\n", line);
-		free(line);
-	}
-	return 0;
-}
+char	*get_next_line(int fd);
+#endif

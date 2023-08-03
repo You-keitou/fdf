@@ -1,10 +1,10 @@
 
 NAME = libftprintf.a
 INCLUDE = ../include
-LIBFT = libft
+LIBFT = ../libft
 SRC_DIR = src/
 OBJ_DIR = obj/
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Werror -Wextra -I
 RM = rm -f
 AR = ar rcs
@@ -20,7 +20,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C $(LIBFT)
-	@cp libft/libft.a .
+	@cp ${LIBFT}/libft.a .
 	@mv libft.a $(NAME)
 	$(AR) $(NAME) $(OBJ)
 
