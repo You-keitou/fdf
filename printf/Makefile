@@ -19,7 +19,6 @@ OBJF = .cache_exists
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make -C $(LIBFT)
 	@cp ${LIBFT}/libft.a .
 	@mv libft.a $(NAME)
 	$(AR) $(NAME) $(OBJ)
@@ -32,11 +31,9 @@ $(OBJF):
 
 clean:
 			@$(RM) -rf $(OBJ_DIR)
-			@make clean -C $(LIBFT)
 
 fclean:		clean
 			@$(RM) -f $(NAME)
-			@$(RM) -f $(LIBFT)/libft.a
 
 re:			fclean all
 

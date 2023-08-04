@@ -6,13 +6,13 @@
 /*   By: jinyang <jinyang@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 19:56:29 by jinyang           #+#    #+#             */
-/*   Updated: 2023/08/04 16:36:16 by jinyang          ###   ########.fr       */
+/*   Updated: 2023/08/04 17:52:12 by jinyang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "fdf.h"
 #include "get_next_line.h"
 #include "libftprintf.h"
-#include "fdf.h"
 #include <fcntl.h>
 
 #define MAX_LINE 1000
@@ -30,7 +30,8 @@
 // 	j = 0;
 // 	while (lines[j])
 // 	{
-// 		map[j] = (t_mappoint *)malloc(sizeof(t_mappoint) * ft_strlen(lines[j]) / 2);
+// 		map[j] = (t_mappoint *)malloc(sizeof(t_mappoint) * ft_strlen(lines[j])
+//			/ 2);
 // 		if (map[j] == NULL)
 // 			return (map);
 // 		dot_info = ft_split(lines[j], ' ');
@@ -53,26 +54,10 @@
 // 	return (map);
 // }
 
-int		count_width(char **line)
+static void	free_all_lines(char **lines)
 {
-	int i;
-
-	if (line == NULL)
-		return (0);
-	i = 0;
-	while (line[i])
-	{
-		if (line[i][0] == '\n')
-			break;
-		i++;
-	}
-	return (i);
-}
-
-void	free_all_lines(char **lines)
-{
-	char **cur_line;
-	char **tmp;
+	char	**cur_line;
+	char	**tmp;
 
 	if (lines == NULL)
 		return ;
@@ -86,14 +71,34 @@ void	free_all_lines(char **lines)
 	free(lines);
 }
 
-char	**read_file(char *file_name, int *width, int *height)
+static int	cal_width(char **lines)
+{
+	int		width;
+	char	**splited_line;
+
+	if (lines == NULL)
+		return (0);
+	splited_line = ft_split(lines[0], ' ');
+	width = 0;
+	while (splited_line[width])
+	{
+		if (splited_line[width][0] == '\n')
+			break ;
+		width++;
+	}
+	free_all_lines(splited_line);
+	return (width);
+}
+
+static char	**read_file(char *file_name, int *width, int *height)
 {
 	int		fd;
 	char	**lines;
-	char	**splited_line;
-	int i;
+	int		i;
 
 	lines = (char **)malloc(sizeof(char *) * MAX_LINE);
+	if (lines == NULL)
+		perror("Can't allocate memory\n");
 	fd = open(file_name, O_RDONLY);
 	if (fd == -1)
 		perror("Can't open the file\n");
@@ -102,27 +107,23 @@ char	**read_file(char *file_name, int *width, int *height)
 	{
 		lines[i] = get_next_line(fd);
 		if (lines[i] == NULL)
-			break;
+			break ;
+		if (i == 0)
+			*width = cal_width(lines);
 		i++;
 	}
 	*height = i;
-	if (lines[0])
-	{
-		splited_line = ft_split(lines[0], ' ');
-		*width = count_width(splited_line);
-		if (splited_line)
-			free_all_lines(splited_line);
-	}
+	close(fd);
 	return (lines);
 }
 
 int	main(int argc, char **argv)
 {
-	// t_mappoint **map;
-	char **lines;
-	int	width;
-	int	height;
+	char	**lines;
+	int		width;
+	int		height;
 
+	// t_mappoint **map;
 	if (argc == 1)
 		perror("No file name given.\n");
 	else if (argc > 2)
@@ -136,18 +137,17 @@ int	main(int argc, char **argv)
 	return (0);
 }
 
-__attribute__((destructor))
-void    destructor(void)
+__attribute__((destructor)) void destructor(void)
 {
-    int     status;
-    char    buf[50];
+	int		status;
+	char	buf[50];
 
-    snprintf(buf, 50, "leaks %d &> leaksout", getpid());
-    status = system(buf);
-    if (status)
-    {
-        write(2, "leak!!!\n", 8);
-        system("cat leaksout >/dev/stderr");
-        exit(1);
-    }
+	snprintf(buf, 50, "leaks %d &> leaksout", getpid());
+	status = system(buf);
+	if (status)
+	{
+		write(2, "leak!!!\n", 8);
+		system("cat leaksout >/dev/stderr");
+		exit(1);
+	}
 }

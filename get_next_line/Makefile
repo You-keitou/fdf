@@ -14,7 +14,6 @@ OBJ = $(addsuffix .o, $(SRC_FILES))
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	@make -C $(LIBFT)
 	@cp ${LIBFT}/libft.a .
 	@mv libft.a $(NAME)
 	$(AR) $(NAME) $(OBJ)
@@ -24,11 +23,9 @@ $(NAME) : $(OBJ)
 
 clean :
 	@$(RM) -rf $(OBJ)
-	@make clean -C $(LIBFT)
 
 fclean : clean
 	@$(RM) -f $(NAME)
-	@$(RM) -f $(LIBFT)/libft.a
 
 re : fclean all
 
