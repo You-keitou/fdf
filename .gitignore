@@ -4,7 +4,8 @@
 .DS_Store
 fdf
 leaksout
-
+fdf_test
+libmlx.dylib
 
 */*.a
 */*.o
